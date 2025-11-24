@@ -1,8 +1,8 @@
-from fastapi import APIRouter
+from fastapi import APIRouter, Depends
 from typing import Optional
 from tortoise.queryset import QuerySet
 from .models import Book
-from .schemas import ReadBook_Pydantic, CreateBook 
+from .schemas import ReadBook_Pydantic, CreateBook
 from fastapi_pagination import Page
 from .paginations import CustomParams
 from fastapi_pagination.ext.tortoise import paginate
@@ -10,9 +10,8 @@ from fastapi_pagination.ext.tortoise import paginate
 router = APIRouter()
 
 
-
 @router.get('/', response_model= Page[ReadBook_Pydantic])
-async def books(name: Optional[str] = None, author: Optional[str] = None) -> Page[int]:
+async def books(name: Optional[str] = None, author: Optional[str] = None, params: CustomParams = Depends()) -> Page[int]:
     query: QuerySet[Book] = Book.all()
     if author:
         query = query.filter(author__icontains=author)
@@ -22,7 +21,7 @@ async def books(name: Optional[str] = None, author: Optional[str] = None) -> Pag
     # apply ordering
     query = query.order_by('-create_at')
     
-    return await paginate(query, params= CustomParams())
+    return await paginate(query, params= params)
 
 
 @router.post('/', response_model=ReadBook_Pydantic)
