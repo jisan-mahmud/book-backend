@@ -5,7 +5,7 @@ from .models import Book
 from .schemas import ReadBook_Pydantic, CreateBook
 from fastapi_pagination import Page
 from .paginations import CustomParams
-from fastapi_pagination.ext.tortoise import paginate
+from fastapi_pagination.ext.tortoise import apaginate
 
 router = APIRouter()
 
@@ -21,7 +21,7 @@ async def books(name: Optional[str] = None, author: Optional[str] = None, params
     # apply ordering
     query = query.order_by('-create_at')
     
-    return await paginate(query, params= params)
+    return await apaginate(query, params= params)
 
 
 @router.post('/', response_model=ReadBook_Pydantic)
