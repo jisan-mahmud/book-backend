@@ -1,11 +1,9 @@
 from ..database import Base
-from sqlalchemy import Column, String
-from sqlalchemy.dialects.postgresql import UUID
-import uuid
+from sqlalchemy import Column, String, Integer
 
 class Book(Base):
     __tablename__ = 'books'
     
-    id = Column(UUID(as_uuid= True), primary_key= True, default= uuid.uuid4)
+    id = Column(Integer, primary_key= True, autoincrement= True)
     name = Column(String(100), nullable= False)
     author = Column(String(100), nullable= False)

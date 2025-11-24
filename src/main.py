@@ -1,5 +1,5 @@
 from fastapi import FastAPI
-from book.router import router as book_router
+from .book.router import router as book_router
 
 app = FastAPI(
     title= 'FastAPI book backend',
