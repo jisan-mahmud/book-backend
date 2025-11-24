@@ -1,9 +1,9 @@
-from ..database import Base
-from sqlalchemy import Column, String, Integer
+from tortoise import fields, models
 
-class Book(Base):
-    __tablename__ = 'books'
-    
-    id = Column(Integer, primary_key= True, autoincrement= True)
-    name = Column(String(100), nullable= False)
-    author = Column(String(100), nullable= False)
+class Book(models.Model):
+    id = fields.IntField(pk=True)  # Primary key, auto-increment by default
+    name = fields.CharField(max_length=100, null=False)
+    author = fields.CharField(max_length=100, null=False)
+
+    class Meta:
+        table = "books"  # Optional: specify table name

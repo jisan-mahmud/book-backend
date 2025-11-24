@@ -1,22 +1,18 @@
-from sqlalchemy.ext.asyncio import AsyncSession, create_async_engine
-from sqlalchemy.orm import sessionmaker, declarative_base
+from tortoise import Tortoise
 
-DATABASE_URL = "postgresql+asyncpg://postgres:postgres@localhost:5433/book_db"
+DATABASE_URL = "postgres://postgres:postgres@localhost:5433/book_db"  # Tortoise uses "postgres" scheme
 
-# Create async engine
-engine = create_async_engine(DATABASE_URL, echo=True)
+async def init_db():
+    """
+    Initialize Tortoise ORM. Call this at startup.
+    """
+    await Tortoise.init(
+        db_url=DATABASE_URL,
+        modules={"models": ["src.book.models"]},
+    )
+    # Automatically generate database tables
+    await Tortoise.generate_schemas()
 
-# Create session
-async_session = sessionmaker(
-    bind=engine,
-    class_=AsyncSession,
-    expire_on_commit=False
-)
-
-# Base class for model
-Base = declarative_base()
-
-# Dependency for FastAPI
-async def get_db():
-    async with async_session() as session:
-        yield session
+# Optional: Close connections on shutdown
+async def close_db():
+    await Tortoise.close_connections()

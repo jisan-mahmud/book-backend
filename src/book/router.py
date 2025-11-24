@@ -1,31 +1,22 @@
-from fastapi import APIRouter, Request, Depends
-from sqlalchemy.ext.asyncio import AsyncSession
-from sqlalchemy import select
-from .schemas import CreateBook, ReadBook
-from ..database import get_db
+from fastapi import APIRouter
+from typing import List, Optional
 from .models import Book
-from typing import List
+from .schemas import ReadBook_Pydantic, CreateBook_Pydantic  # Use the tortoise_pydantic models
 
 router = APIRouter()
 
-@router.get('/', response_model= List[ReadBook])
-async def books(name: str= None, author: str= None, db: AsyncSession = Depends(get_db)):
-    filters = []
+@router.get('/', response_model=List[ReadBook_Pydantic])
+async def books(name: Optional[str] = None, author: Optional[str] = None):
+    query = Book.all()
     if author:
-        filters.append(Book.author.ilike(f"%{author}%"))
+        query = query.filter(author__icontains=author)
     if name:
-        filters.append(Book.name.ilike(f"%{name}%"))
-
-    query = select(Book).where(*filters)
-    result = await db.execute(query)
-    return result.scalars().all()
+        query = query.filter(name__icontains=name)
+    
+    return await ReadBook_Pydantic.from_queryset(query)
 
 
-@router.post('/')
-async def add_book(book: CreateBook, db: AsyncSession = Depends(get_db)):
-    new_book = Book(**book.__dict__)
-    db.add(new_book)
-    await db.commit()
-
-
-    return new_book
+@router.post('/', response_model=ReadBook_Pydantic)
+async def add_book(book: CreateBook_Pydantic):
+    obj = await Book.create(**book.dict())
+    return await ReadBook_Pydantic.from_tortoise_orm(obj)
