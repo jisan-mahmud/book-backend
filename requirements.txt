@@ -1,5 +1,4 @@
 aiosqlite==0.21.0
-alembic==1.17.2
 annotated-doc==0.0.4
 annotated-types==0.7.0
 anyio==4.11.0
@@ -12,6 +11,7 @@ email-validator==2.3.0
 fastapi==0.121.3
 fastapi-cli==0.0.16
 fastapi-cloud-cli==0.5.1
+fastapi-pagination==0.15.0
 fastar==0.6.0
 greenlet==3.2.4
 h11==0.16.0

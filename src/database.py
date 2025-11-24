@@ -1,6 +1,6 @@
 from tortoise import Tortoise
 
-DATABASE_URL = "postgres://postgres:postgres@localhost:5433/book_db"  # Tortoise uses "postgres" scheme
+DATABASE_URL = "postgres://postgres:postgres@localhost:5433/book_db" 
 
 async def init_db():
     """

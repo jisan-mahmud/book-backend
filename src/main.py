@@ -1,6 +1,7 @@
 from fastapi import FastAPI
 from src.book.router import router as book_router
 from src.database import init_db, close_db
+from fastapi_pagination import add_pagination
 
 app = FastAPI(
     title="FastAPI Book Backend",
@@ -9,6 +10,11 @@ app = FastAPI(
 
 # Include routers
 app.include_router(book_router, prefix="/books", tags=["book"])
+
+
+
+# add pagination support globally
+add_pagination(app)
 
 # Startup / Shutdown events
 @app.on_event("startup")

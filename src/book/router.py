@@ -1,19 +1,28 @@
 from fastapi import APIRouter
-from typing import List, Optional
+from typing import Optional
+from tortoise.queryset import QuerySet
 from .models import Book
 from .schemas import ReadBook_Pydantic, CreateBook 
+from fastapi_pagination import Page
+from .paginations import CustomParams
+from fastapi_pagination.ext.tortoise import paginate
 
 router = APIRouter()
 
-@router.get('/', response_model=List[ReadBook_Pydantic])
-async def books(name: Optional[str] = None, author: Optional[str] = None):
-    query: List[Book] = Book.all()
+
+
+@router.get('/', response_model= Page[ReadBook_Pydantic])
+async def books(name: Optional[str] = None, author: Optional[str] = None) -> Page[int]:
+    query: QuerySet[Book] = Book.all()
     if author:
         query = query.filter(author__icontains=author)
     if name:
         query = query.filter(name__icontains=name)
+
+    # apply ordering
+    query = query.order_by('-create_at')
     
-    return await ReadBook_Pydantic.from_queryset(query)
+    return await paginate(query, params= CustomParams())
 
 
 @router.post('/', response_model=ReadBook_Pydantic)
