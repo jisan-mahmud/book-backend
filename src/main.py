@@ -4,6 +4,7 @@ from src.auth.router import router as auth_router
 from src.database import init_db, close_db
 from fastapi_pagination import add_pagination
 
+
 app = FastAPI(
     title="FastAPI Book Backend",
     version="1.0.0"

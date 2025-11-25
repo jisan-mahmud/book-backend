@@ -1,8 +1,8 @@
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter, HTTPException, Depends
 from .schemas import UserCreatePydantic, UserRead, LoginCredential
 from .services import UserService
-from .security import create_access_token
-
+from .security import create_access_token, is_authenticated
+from .models import User
 
 
 router = APIRouter()
@@ -25,12 +25,13 @@ async def login(credential: LoginCredential):
             'message': 'credential are invalid'
         })
     
-
     access_token = create_access_token(user.id)
-
     response: dict = {
         'user_id': user.id,
         'access_token': access_token
     }
-
     return response
+
+@router.post('/me', response_model= UserRead)
+async def current_user(user: User = Depends(is_authenticated)):
+    return user
