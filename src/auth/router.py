@@ -1,6 +1,10 @@
 from fastapi import APIRouter, HTTPException
-from .schemas import UserCreatePydantic, UserRead
+from .schemas import UserCreatePydantic, UserRead, LoginCredential
 from .services import UserService
+from .security import create_access_token
+
+
+
 router = APIRouter()
 
 
@@ -11,3 +15,22 @@ async def signup(user: UserCreatePydantic):
         raise HTTPException(status_code= 400, detail= 'this user already exist')
     user = await UserService.create_user(user)
     return user
+
+@router.post('/login')
+async def login(credential: LoginCredential):
+    user = await UserService.authenticate_use(credential.email, credential.password)
+    if not user:
+        raise HTTPException(status_code= 404, detail= {
+            'error': 'Authentication fail',
+            'message': 'credential are invalid'
+        })
+    
+
+    access_token = create_access_token(user.id)
+
+    response: dict = {
+        'user_id': user.id,
+        'access_token': access_token
+    }
+
+    return response

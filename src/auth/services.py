@@ -1,6 +1,6 @@
 from .schemas import UserCreatePydantic
 from .models import User
-from .security import hash_password
+from .security import hash_password, verify_password
 
 
 class UserService:
@@ -20,4 +20,14 @@ class UserService:
             user_data['full_name'] = data.full_name
 
         user = await User.create(**user_data)
+        return user
+    
+    @staticmethod
+    async def authenticate_use(email: str, password: str) -> User | None:
+        user: User | None = await UserService.get_user_by_email(email)
+        if not user:
+            return None
+        if not verify_password(password, user.hashed_password):
+            return None
+        
         return user

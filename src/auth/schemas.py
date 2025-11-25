@@ -16,3 +16,8 @@ class UserCreatePydantic(BaseModel):
         if self.password != self.confirm_password:
             raise ValueError('password do not match')
         return self
+    
+
+class LoginCredential(BaseModel):
+    email: EmailStr
+    password: str
