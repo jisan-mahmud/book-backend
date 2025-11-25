@@ -29,5 +29,5 @@ async def books(name: Optional[str] = None, author: Optional[str] = None, params
 
 @router.post('/', response_model=ReadBook_Pydantic)
 async def add_book(book: CreateBook, user: User = Depends(is_authenticated)):
-    obj = await Book.create(**book.dict())
+    obj = await Book.create(**book.model_dump())
     return await ReadBook_Pydantic.from_tortoise_orm(obj)
