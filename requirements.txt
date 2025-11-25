@@ -4,6 +4,7 @@ annotated-types==0.7.0
 anyio==4.11.0
 argon2-cffi==25.1.0
 argon2-cffi-bindings==25.1.0
+async-timeout==5.0.1
 asyncpg==0.30.0
 certifi==2025.11.12
 cffi==2.0.0
@@ -16,6 +17,7 @@ email-validator==2.3.0
 fastapi==0.121.3
 fastapi-cli==0.0.16
 fastapi-cloud-cli==0.5.1
+fastapi-limiter==0.1.6
 fastapi-pagination==0.15.0
 fastar==0.6.0
 greenlet==3.2.4
@@ -42,6 +44,7 @@ python-jose==3.5.0
 python-multipart==0.0.20
 pytz==2025.2
 PyYAML==6.0.3
+redis==7.1.0
 rich==14.2.0
 rich-toolkit==0.16.0
 rignore==0.7.6
