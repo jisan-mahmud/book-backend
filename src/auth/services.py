@@ -11,13 +11,13 @@ class UserService:
 
     @staticmethod
     async def create_user(data: UserCreatePydantic) -> User:
-        user: User = await User.create(
-            email = data.email,
-            hashed_password = hash_password(data.password)
-        )
+        user_data = {
+            "email": data.email,
+            "hashed_password": hash_password(data.password)
+        }
 
-        if data.full_name:
-            user.full_name = data.full_name
-            user.save()
+        if getattr(data, 'full_name', None):
+            user_data['full_name'] = data.full_name
 
+        user = await User.create(**user_data)
         return user

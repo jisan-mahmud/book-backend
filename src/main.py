@@ -1,5 +1,6 @@
 from fastapi import FastAPI
 from src.book.router import router as book_router
+from src.auth.router import router as auth_router
 from src.database import init_db, close_db
 from fastapi_pagination import add_pagination
 
@@ -10,6 +11,7 @@ app = FastAPI(
 
 # Include routers
 app.include_router(book_router, prefix="/books", tags=["book"])
+app.include_router(auth_router, prefix="/auth", tags=["auth"])
 
 
 
@@ -24,3 +26,5 @@ async def on_startup():
 @app.on_event("shutdown")
 async def on_shutdown():
     await close_db()
+
+print(app.servers)

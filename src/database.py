@@ -8,7 +8,7 @@ async def init_db():
     """
     await Tortoise.init(
         db_url=DATABASE_URL,
-        modules={"models": ["src.book.models"]},
+        modules={"models": ["src.book.models", "src.auth.models"]},
     )
     # Automatically generate database tables
     await Tortoise.generate_schemas()
