@@ -1,4 +1,4 @@
-from pydantic import BaseModel, EmailStr, model_validator
+from pydantic import BaseModel, EmailStr, model_validator, field_validator
 from tortoise.contrib.pydantic import pydantic_model_creator
 from .models import User 
 
@@ -15,8 +15,11 @@ class UserCreatePydantic(BaseModel):
     def password_validate(self):
         if self.password != self.confirm_password:
             raise ValueError('password do not match')
+        
+        if len(self.password) < 8:
+            raise ValueError('password are too short!')
+        
         return self
-    
 
 class LoginCredential(BaseModel):
     email: EmailStr
