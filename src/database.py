@@ -1,6 +1,9 @@
 from tortoise import Tortoise
+from dotenv import load_dotenv
+import os
+load_dotenv()
 
-DATABASE_URL = "postgres://postgres:postgres@localhost:5433/book_db" 
+DATABASE_URL = os.getenv('DATABASE_URL')
 
 async def init_db():
     """
