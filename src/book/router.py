@@ -9,6 +9,9 @@ from .paginations import CustomParams
 from src.auth.security import is_authenticated
 from src.auth.models import User
 from fastapi_limiter.depends import RateLimiter
+import logging
+
+logger = logging.getLogger('book-router')
 
 router = APIRouter()
 
@@ -23,6 +26,8 @@ async def books(name: Optional[str] = None, author: Optional[str] = None, params
 
     # apply ordering
     query = query.order_by('-create_at')
+
+    logger.info('Test success...........')
     
     return await apaginate(query, params= params)
 

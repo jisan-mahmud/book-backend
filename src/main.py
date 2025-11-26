@@ -5,6 +5,10 @@ from src.database import init_db, close_db
 from fastapi_pagination import add_pagination
 import redis.asyncio as redis
 from fastapi_limiter import FastAPILimiter
+from .logging_config import setup_logging
+
+
+setup_logging()
 
 app = FastAPI(
     title="FastAPI Book Backend",
