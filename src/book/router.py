@@ -25,7 +25,7 @@ async def books(name: Optional[str] = None, author: Optional[str] = None, params
         query = query.filter(name__icontains=name)
 
     # apply ordering
-    query = query.order_by('-create_at')
+    query = query.order_by('-created_at')
 
     logger.info('Test success...........')
     
@@ -34,5 +34,5 @@ async def books(name: Optional[str] = None, author: Optional[str] = None, params
 
 @router.post('/', response_model=ReadBook_Pydantic)
 async def add_book(book: CreateBook, user: User = Depends(is_authenticated)):
-    obj = await Book.create(**book.model_dump())
+    obj = await Book.create(**book.model_dump(), created_by= user)
     return await ReadBook_Pydantic.from_tortoise_orm(obj)

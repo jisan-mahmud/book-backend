@@ -28,7 +28,6 @@ app = FastAPI(
     lifespan= lifespan
 )
 
-
 # Include routers
 app.include_router(book_router, prefix="/books", tags=["book"])
 app.include_router(auth_router, prefix="/auth", tags=["auth"])
