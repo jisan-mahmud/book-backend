@@ -28,8 +28,7 @@ async def books(name: Optional[str] = None, author: Optional[str] = None, params
     # apply ordering
     query = query.order_by('-created_at')
 
-    logger.info('Test success...........')
-    
+    logger.info('Test success inside docker')
     return await apaginate(query, params= params)
 
 
@@ -42,7 +41,6 @@ async def add_book(book: CreateBook, user: User = Depends(current_user)):
 @router.get('/{book_id}', response_model= ReadBook_Pydantic)
 async def detail_book(book_id: int):
     book: Book = await Book.get_or_none(pk= book_id)
-
     if not book:
         raise HTTPException(status_code= status.HTTP_404_NOT_FOUND, detail= 'book not found')
     
