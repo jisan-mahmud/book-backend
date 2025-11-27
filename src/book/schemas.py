@@ -1,43 +1,44 @@
-from typing import Optional
-from pydantic import BaseModel, field_validator, ConfigDict
+from typing import Optional, Annotated
+from pydantic import BaseModel, Field, AfterValidator
 from tortoise.contrib.pydantic import pydantic_model_creator
 from .models import Book
+from .utility import must_be_letters
 
 
+# Base model from Tortoise ORM (fields come from DB model)
 CreateBookBase = pydantic_model_creator(
     Book,
     name="CreateBookBase",
     exclude_readonly=True
 )
 
+# Response model for reading
 ReadBook_Pydantic = pydantic_model_creator(
     Book,
     name="ReadBook",
 )
 
 
-# Shared validators (base class)
-class BookValidators(BaseModel):
-    model_config = ConfigDict(extra="ignore")
-
-    @field_validator("name", check_fields=False)
-    def validate_name(cls, v):
-        if v is not None and len(v) < 3:
-            raise ValueError("Book name must be at least 3 characters long")
-        return v
-
-    @field_validator("author", check_fields=False)
-    def validate_author(cls, v):
-        if v is not None and not v.replace(" ", "").isalpha():
-            raise ValueError("Author name must contain only letters")
-        return v
+# Common validation for fields (DRY)
+NameField = Annotated[str, Field(min_length=6)]
+AuthorField = Annotated[
+    str,
+    Field(min_length=6),
+    AfterValidator(must_be_letters)
+]
 
 
+class CreateBook(CreateBookBase):
+    """
+    Only overrides fields that need extra validation
+    """
+    name: NameField
+    author: AuthorField
 
-class CreateBook(BookValidators, CreateBookBase):
-    pass
 
-
-class UpdateBook(BookValidators):
-    name: Optional[str] = None
-    author: Optional[str] = None
+class UpdateBook(BaseModel):
+    """
+    Partial update with same validation rules but optional
+    """
+    name: Optional[NameField] = None
+    author: Optional[AuthorField] = None

@@ -11,3 +11,9 @@ async def IsOnwer(book_id, user: User = Depends(current_user)):
                 detail= 'book not found, not owned by this user'
             )
     return book
+
+
+def must_be_letters(v: str):
+    if not v.replace(" ", "").isalpha():
+        raise ValueError("Only letters allowed")
+    return v
