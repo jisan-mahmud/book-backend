@@ -4,14 +4,6 @@ from tortoise.contrib.pydantic import pydantic_model_creator
 from .models import Book
 from .utility import must_be_letters
 
-
-# Base model from Tortoise ORM (fields come from DB model)
-CreateBookBase = pydantic_model_creator(
-    Book,
-    name="CreateBookBase",
-    exclude_readonly=True
-)
-
 # Response model for reading
 ReadBook_Pydantic = pydantic_model_creator(
     Book,
@@ -28,17 +20,11 @@ AuthorField = Annotated[
 ]
 
 
-class CreateBook(CreateBookBase):
-    """
-    Only overrides fields that need extra validation
-    """
+class CreateBook(BaseModel):
     name: NameField
     author: AuthorField
 
 
 class UpdateBook(BaseModel):
-    """
-    Partial update with same validation rules but optional
-    """
     name: Optional[NameField] = None
     author: Optional[AuthorField] = None
