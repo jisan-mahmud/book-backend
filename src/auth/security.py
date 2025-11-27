@@ -1,5 +1,5 @@
 from passlib.context import CryptContext
-from jose import jwt, JWTError, ExpiredSignatureError
+from jose import jwt, ExpiredSignatureError
 from .models import User
 from datetime import timedelta, datetime
 from fastapi import Depends, HTTPException, status
@@ -36,7 +36,7 @@ async def current_user(token: str = Depends(oauth2_scheme)) -> User | None:
     try:
         payload = jwt.decode(token, SECRET_KEY, ALGORITHM)
         user_id: uuid = uuid.UUID(payload.get('user_id'))
-        user: User = await User.get_or_none(id= user_id)
+        user: User = await User.get(id= user_id)
         return user
     except ExpiredSignatureError:
         raise HTTPException(
@@ -44,7 +44,7 @@ async def current_user(token: str = Depends(oauth2_scheme)) -> User | None:
             detail= 'Token has expire',
             headers= {'WWW-Authenticate': 'Bearer'}
         )
-    except JWTError:
+    except:
         raise HTTPException(
             status_code= status.HTTP_401_UNAUTHORIZED,
             detail= 'Could not valid jwt',

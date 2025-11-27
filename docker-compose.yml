@@ -6,9 +6,9 @@ services:
     container_name: postgres-db
     restart: always
     environment:
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: postgres
-      POSTGRES_DB: book_db
+      POSTGRES_USER: ${postgres}
+      POSTGRES_PASSWORD: ${postgres}
+      POSTGRES_DB: ${book_db}
     ports:
       - "5433:5432"
     volumes:
@@ -20,6 +20,9 @@ services:
     restart: always
     ports:
       - "6379:6379"
+    volumes:
+      - redis_data:/data
+    command: ["redis-server", "--appendonly", "yes"]
 
   api:
     build: .
@@ -37,3 +40,4 @@ services:
 
 volumes:
   postgres_data:
+  redis_data:
