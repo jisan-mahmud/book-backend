@@ -1,10 +1,12 @@
+from typing import Optional
+from pydantic import BaseModel, field_validator, ConfigDict
 from tortoise.contrib.pydantic import pydantic_model_creator
-from pydantic import field_validator
 from .models import Book
+
 
 CreateBookBase = pydantic_model_creator(
     Book,
-    name="CreateBook",
+    name="CreateBookBase",
     exclude_readonly=True
 )
 
@@ -14,15 +16,28 @@ ReadBook_Pydantic = pydantic_model_creator(
 )
 
 
-class CreateBook(CreateBookBase):
-    @field_validator("name")
-    def validate_name(cls, value):
-        if len(value) < 3:
-            raise ValueError("Book name must be at least 3 characters long")
-        return value
+# Shared validators (base class)
+class BookValidators(BaseModel):
+    model_config = ConfigDict(extra="ignore")
 
-    @field_validator("author")
-    def validate_author(cls, value):
-        if not value.replace(" ", "").isalpha():
+    @field_validator("name", check_fields=False)
+    def validate_name(cls, v):
+        if v is not None and len(v) < 3:
+            raise ValueError("Book name must be at least 3 characters long")
+        return v
+
+    @field_validator("author", check_fields=False)
+    def validate_author(cls, v):
+        if v is not None and not v.replace(" ", "").isalpha():
             raise ValueError("Author name must contain only letters")
-        return value
+        return v
+
+
+
+class CreateBook(BookValidators, CreateBookBase):
+    pass
+
+
+class UpdateBook(BookValidators):
+    name: Optional[str] = None
+    author: Optional[str] = None

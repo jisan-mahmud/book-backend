@@ -1,7 +1,7 @@
 from fastapi import APIRouter, HTTPException, Depends
 from .schemas import UserCreatePydantic, UserRead, LoginCredential
 from .services import UserService
-from .security import create_access_token, is_authenticated
+from .security import create_access_token, current_user
 from .models import User
 
 
@@ -33,5 +33,5 @@ async def login(credential: LoginCredential):
     return response
 
 @router.post('/me', response_model= UserRead)
-async def current_user(user: User = Depends(is_authenticated)):
+async def current_user(user: User = Depends(current_user)):
     return user

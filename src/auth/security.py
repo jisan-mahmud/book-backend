@@ -32,7 +32,7 @@ def create_access_token(user_id: int) -> str:
     expire = datetime.now() + timedelta(days= ACCESS_TOKEN_EXPIRE_DAYS)
     return jwt.encode({'user_id': str(user_id), 'exp': expire}, SECRET_KEY, ALGORITHM)
 
-async def is_authenticated(token: str = Depends(oauth2_scheme)) -> User | None:
+async def current_user(token: str = Depends(oauth2_scheme)) -> User | None:
     try:
         payload = jwt.decode(token, SECRET_KEY, ALGORITHM)
         user_id: uuid = uuid.UUID(payload.get('user_id'))
