@@ -5,6 +5,7 @@ from src.database import init_db, close_db
 from fastapi_pagination import add_pagination
 import redis.asyncio as redis
 from fastapi_limiter import FastAPILimiter
+from fastapi.middleware.cors import CORSMiddleware
 from .logging_config import setup_logging
 from dotenv import load_dotenv
 import os
@@ -31,6 +32,14 @@ app = FastAPI(
     title="FastAPI Book Backend",
     version="1.0.0",
     lifespan= lifespan
+)
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
 )
 
 # Include routers

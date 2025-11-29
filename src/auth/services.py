@@ -23,7 +23,7 @@ class UserService:
         return user
     
     @staticmethod
-    async def authenticate_use(email: str, password: str) -> User | None:
+    async def authenticate_user(email: str, password: str) -> User | None:
         user: User | None = await UserService.get_user_by_email(email)
         if not user:
             return None

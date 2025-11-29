@@ -18,7 +18,7 @@ async def signup(user: UserCreatePydantic):
 
 @router.post('/login')
 async def login(credential: LoginCredential):
-    user = await UserService.authenticate_use(credential.email, credential.password)
+    user = await UserService.authenticate_user(credential.email, credential.password)
     if not user:
         raise HTTPException(status_code= 404, detail= {
             'error': 'Authentication fail',
