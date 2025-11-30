@@ -32,6 +32,28 @@ def create_access_token(user_id: int) -> str:
     expire = datetime.now() + timedelta(days= ACCESS_TOKEN_EXPIRE_DAYS)
     return jwt.encode({'user_id': str(user_id), 'exp': expire}, SECRET_KEY, ALGORITHM)
 
+def create_refresh_token(user_id: int) -> str:
+    expire = datetime.now() + timedelta(days= REFRESH_TOKEN_EXPIRE_MONTHS)
+    return jwt.encode({'user_id': str(user_id), 'exp': expire}, SECRET_KEY, ALGORITHM)
+
+def refresh_to_access_token(refresh_token: str) -> str:
+    try:
+        payload = jwt.decode(refresh_token, SECRET_KEY, algorithms=[ALGORITHM])
+        user_id = payload.get("user_id")
+
+        if user_id is None:
+            raise Exception("Invalid refresh token")
+        
+        user_id = uuid.UUID(user_id)
+        new_access_token = create_access_token(user_id)
+        return new_access_token, user_id
+
+    except jwt.ExpiredSignatureError:
+        raise HTTPException(status_code=401, detail="Refresh token expired")
+    except jwt.InvalidTokenError:
+        raise HTTPException(status_code=401, detail="Invalid refresh token")
+
+
 async def current_user(token: str = Depends(oauth2_scheme)) -> User | None:
     try:
         payload = jwt.decode(token, SECRET_KEY, ALGORITHM)

@@ -24,3 +24,7 @@ class UserCreatePydantic(BaseModel):
 class LoginCredential(BaseModel):
     email: EmailStr
     password: str
+
+
+class Refresh_token_schema(BaseModel):
+    refresh_token: str
