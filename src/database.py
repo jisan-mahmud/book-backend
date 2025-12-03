@@ -1,24 +1,41 @@
+import os
 from tortoise import Tortoise
 from dotenv import load_dotenv
-import os
+
 load_dotenv()
 
-DATABASE_URL = os.getenv('DATABASE_URL')
+DATABASE_URL = os.getenv("DATABASE_URL")
+
+# Example:
+# postgres://postgres:postgres@localhost:5432/book_db
+
+TORTOISE_CONFIG = {
+    "connections": {
+        "default": DATABASE_URL
+    },
+    "apps": {
+        "models": { 
+            "models": [
+                "src.auth.models",
+                "src.book.models",
+                "aerich.models", 
+            ],
+            "default_connection": "default",
+        }
+    },
+}
+
 
 async def init_db():
     """
-    Initialize Tortoise ORM. Call this at startup.
+    Initialize Tortoise ORM at startup.
     """
-    await Tortoise.init(
-        db_url=DATABASE_URL,
-        modules= {
-                "auth": ["src.auth.models"],
-                "book": ["src.book.models"],
-            },
-    )
-    # Automatically generate database tables
+    await Tortoise.init(config=TORTOISE_CONFIG)
     await Tortoise.generate_schemas()
 
-# Optional: Close connections on shutdown
+
 async def close_db():
+    """
+    Close DB connections on shutdown.
+    """
     await Tortoise.close_connections()

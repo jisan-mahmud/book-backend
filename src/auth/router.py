@@ -3,7 +3,6 @@ from .schemas import UserCreatePydantic, UserRead, LoginCredential, Refresh_toke
 from .services import UserService
 from .security import create_access_token, create_refresh_token, refresh_to_access_token, current_user
 from .models import User
-import uuid
 
 
 router = APIRouter()
@@ -11,6 +10,7 @@ router = APIRouter()
 
 @router.post('/signup', response_model= UserRead)
 async def signup(user: UserCreatePydantic):
+    print(user.email)
     existing = await UserService.get_user_by_email(user.email)
     if existing:
         raise HTTPException(status_code= 400, detail= 'this user already exist')
@@ -47,6 +47,6 @@ def refresh_token(refresh_token: str = Body(..., embed= True)):
         "refresh_token": refresh_token
     }
 
-@router.post('/me', response_model= UserRead)
+@router.get('/me', response_model= UserRead)
 async def current_user(user: User = Depends(current_user)):
     return user

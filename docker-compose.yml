@@ -5,12 +5,13 @@ services:
     image: postgres:15
     container_name: postgres-db
     restart: always
+    env_file: .env
     environment:
       POSTGRES_USER: ${postgres}
       POSTGRES_PASSWORD: ${postgres}
       POSTGRES_DB: ${book_db}
     ports:
-      - "5433:5432"
+      - "5434:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
 

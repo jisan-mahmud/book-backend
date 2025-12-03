@@ -9,8 +9,8 @@ class User(models.Model):
     full_name = fields.CharField(max_length= 200, blank= True, null= True)
 
     is_active = fields.BooleanField(default= True)
-    is_superuser = fields.BooleanField(default= True)
-
+    is_superuser = fields.BooleanField(default= False)
+    role = fields.CharField(max_length= 50, default= "user")
     joining_date = fields.DatetimeField(auto_now_add= True)
     last_login = fields.DatetimeField(blank= True, null= True)
 

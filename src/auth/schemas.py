@@ -11,6 +11,10 @@ class UserCreatePydantic(BaseModel):
 
     full_name: str | None = None
 
+    @field_validator('email')
+    def email_validate(cls, v):
+        return v.lower()
+
     @model_validator(mode= 'after')
     def password_validate(self):
         if self.password != self.confirm_password:
@@ -24,6 +28,10 @@ class UserCreatePydantic(BaseModel):
 class LoginCredential(BaseModel):
     email: EmailStr
     password: str
+    
+    @field_validator('email')
+    def email_validate(cls, v):
+        return v.lower()
 
 
 class Refresh_token_schema(BaseModel):

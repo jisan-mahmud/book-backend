@@ -14,7 +14,7 @@ import logging
 
 logger = logging.getLogger('book-router')
 
-router = APIRouter()
+router = APIRouter() 
 
 
 @router.get('/', response_model= Page[ReadBook_Pydantic], dependencies= [Depends(RateLimiter(times= 2, seconds= 10))] )
@@ -29,7 +29,7 @@ async def books(name: Optional[str] = None, author: Optional[str] = None, params
     query = query.order_by('-created_at')
 
     logger.info('Test success inside docker')
-    return await apaginate(query, params= params)
+    return await apaginate(query)
 
 
 
